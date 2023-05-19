@@ -38,3 +38,8 @@
 !/app/assets/builds/.keep
 
 /node_modules
+
+# -------- ☝️ rails's defaults --------
+# -------- 👇 what we override --------
+
+.DS_Store
