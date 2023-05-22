@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  root "site#home"
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+  resources :lists, except: [:new, :edit] do
+    resources :todos, except: [:new, :edit] do
+      # todo: update many
+    end
+
+    # todo: share it
+  end
 end
