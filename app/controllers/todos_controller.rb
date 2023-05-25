@@ -26,6 +26,11 @@ class TodosController < ApplicationController
     end
   end
 
+  def update_many
+    session_user.todos.update_all(todo_params.to_h)
+    redirect_to todos_path
+  end
+
   def destroy
     @todo.destroy!
     redirect_to todos_path

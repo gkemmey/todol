@@ -8,6 +8,7 @@
     <%= form_with model: @todo, class: "w-full" do |f| %>
       <%= f.text_field :title, class: "input input-bordered w-full",
                                placeholder: "type here",
+                               autocomplete: :off,
                                autofocus: true,
                                onfocus: (
                                  <<~JS

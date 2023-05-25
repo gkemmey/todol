@@ -2,7 +2,7 @@
   <div class="navbar-start"></div>
 
   <div class="navbar-center">
-    <span class="text-xl"><%= "<todo>" %></span>
+    <span class="text-xl"><%= "<todos>" %></span>
   </div>
 
   <div class="navbar-end"></div>
@@ -10,13 +10,27 @@
 
 <div class="max-w-2xl mx-auto mt-4 px-[var(--navbar-padding,0.5rem)]">
   <section class="flex items-center gap-4">
-    <form style="line-height: 0;">
-      <input type="checkbox" class="checkbox" />
-    </form>
+    <%= form_with url: update_many_todos_path, scope: :todo,
+                                               method: :patch,
+                                               style: "line-height: 0;" do |f| %>
+      <% @todos.each do |todo| %>
+        <%= hidden_field_tag "ids[]", todo.id %>
+      <% end %>
+
+      <%= f.check_box :completed, checked: @todos.all?(&:completed?),
+                                  class: "checkbox",
+                                  onclick: (
+                                    <<~JS
+                                      (function (field) { field.closest("form").requestSubmit(); })(this);
+                                    JS
+                                  ) %>
+    <% end %>
 
     <div class="w-full">
       <%= form_with model: Todo.new do |f| %>
-        <%= f.text_field :title, placeholder: "what needs to be done?", class: "input input-bordered w-full" %>
+        <%= f.text_field :title, class: "input input-bordered w-full",
+                                 placeholder: "what needs to be done?",
+                                 autocomplete: :off %>
       <% end %>
     </div>
   </section>
