@@ -1,31 +1,31 @@
-<div class="group flex items-center gap-4 h-12">
-  <%= form_with model: todo, style: "line-height: 0;" do |f| %>
-    <%= f.check_box :completed, class: "checkbox" %>
-  <% end %>
+<turbo-frame id="<%= dom_id(todo) %>">
+  <div class="group flex items-center gap-4 h-12">
+    <%= form_with model: todo, style: "line-height: 0;" do |f| %>
+      <%= f.check_box :completed, class: "checkbox",
+                                  onclick: (
+                                    <<~JS
+                                      (function (field) { field.closest("form").requestSubmit(); })(this);
+                                    JS
+                                  ) %>
+    <% end %>
 
-  <div class="w-full">
-    <%= tag.turbo_frame id: dom_id(todo),
-                        ondblclick: (
-                          <<~JS
-                            (function (frame) {
-                              frame.src = "#{edit_todo_path(todo)}";
+    <%= tag.label class: "block w-full pl-4",
+                  ondblclick: (
+                    <<~JS
+                      (function (label) {
+                        var frame = label.closest("##{dom_id(todo)}");
+                        frame.src = "#{edit_todo_path(todo)}";
+                      })(this);
+                    JS
+                  ) do %>
+      <%= todo.title %>
+    <% end %>
 
-                              var wrapper = frame.parentElement.parentElement;
-                              var checkBoxForm = wrapper.children[0];
-                              var deleteButton = wrapper.children[2];
-
-                              checkBoxForm.classList.add("invisible");
-                              deleteButton.classList.add("hidden");
-                            })(this);
-                          JS
-                        ) do %>
-      <label class="<%= class_names("block pl-4", "line-through" => todo.completed?) %>">
-        <%= todo.title %>
-      </label>
+    <%= button_to todo_path(todo),
+                  method: :delete,
+                  form: { data: { turbo_confirm: "Are you sure?", turbo_frame: "_top" } },
+                  class: "btn btn-ghost btn-circle invisible group-hover:visible" do %>
+      <%= icon("trash", class: "h-4 w-4") %>
     <% end %>
   </div>
-
-  <button class="invisible group-hover:visible btn btn-ghost btn-circle">
-    <%= icon("trash", class: "h-4 w-4") %>
-  </button>
-</div>
+</turbo-frame>

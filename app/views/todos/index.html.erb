@@ -15,39 +15,15 @@
     </form>
 
     <div class="w-full">
-      <%= render "todos/form", todo: Todo.new %>
-    </form>
+      <%= form_with model: Todo.new do |f| %>
+        <%= f.text_field :title, placeholder: "what needs to be done?", class: "input input-bordered w-full" %>
+      <% end %>
+    </div>
   </section>
 
   <div class="divider"></div>
 
   <main>
-    <div class="group flex items-center gap-4 h-12">
-      <form style="line-height: 0;">
-        <input type="checkbox" class="checkbox" />
-      </form>
-
-      <label class="w-full pl-4">todo #1</label>
-
-      <button class="invisible group-hover:visible btn btn-ghost btn-circle">
-        <%= icon("trash", class: "h-4 w-4") %>
-      </button>
-    </div>
-
-    <div class="group flex items-center gap-4 h-12">
-      <form class="invisible" style="line-height: 0;">
-        <input type="checkbox" class="checkbox" />
-      </form>
-
-      <form class="w-full">
-        <input type="text" value="todo #2" class="input input-bordered w-full" />
-      </form>
-
-      <button class="hidden group-hover:visible btn btn-ghost btn-circle">
-        <%= icon("trash", class: "h-4 w-4") %>
-      </button>
-    </div>
-
     <%= render @todos %>
   </main>
 </div>

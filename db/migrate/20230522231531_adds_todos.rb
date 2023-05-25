@@ -1,4 +1,4 @@
-class AddsListsAndTodos < ActiveRecord::Migration[7.0]
+class AddsTodos < ActiveRecord::Migration[7.0]
   def change
     create_table :todos do |t|
       t.string :session_user_id, null: false, index: true

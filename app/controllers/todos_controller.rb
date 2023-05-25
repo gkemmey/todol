@@ -1,4 +1,6 @@
 class TodosController < ApplicationController
+  before_action :find_todo, only: [:edit, :update, :destroy]
+
   def index
     @todos = session_user.todos
   end
@@ -14,12 +16,9 @@ class TodosController < ApplicationController
   end
 
   def edit
-    @todo = session_user.todos.find(params[:id])
   end
 
   def update
-    @todo = session_user.todos.find(params[:id])
-
     if @todo.update(todo_params)
       redirect_to todos_path
     else
@@ -27,7 +26,16 @@ class TodosController < ApplicationController
     end
   end
 
+  def destroy
+    @todo.destroy!
+    redirect_to todos_path
+  end
+
   private
+
+    def find_todo
+      @todo = session_user.todos.find(params[:id])
+    end
 
     def todo_params
       params.require(:todo).permit(:title, :completed)

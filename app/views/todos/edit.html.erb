@@ -1,3 +1,29 @@
-<turbo-frame id="<%= dom_id @todo %>">
-  <%= render "form", todo: @todo, autofocus: true, submit_onblur: true %>
-<turbo-frame>
+<turbo-frame id="<%= dom_id(@todo) %>">
+  <div class="group flex items-center gap-4 h-12">
+    <%# rendered invisible to consume the space %>
+    <%= form_with model: @todo, style: "line-height: 0;", class: "invisible" do |f| %>
+      <%= f.check_box :completed, class: "checkbox" %>
+    <% end %>
+
+    <%= form_with model: @todo, class: "w-full" do |f| %>
+      <%= f.text_field :title, class: "input input-bordered w-full",
+                               placeholder: "type here",
+                               autofocus: true,
+                               onfocus: (
+                                 <<~JS
+                                   (function autofocusCursorAtTheEnd(field, value) {
+                                     field.value = '';
+                                     field.value = value;
+                                   })(this, this.value);
+                                 JS
+                               ),
+                               onblur: (
+                                 <<~JS
+                                   (function (field) { field.closest("form").requestSubmit(); })(this);
+                                 JS
+                               ) %>
+    <% end %>
+
+    <%# don't show the delete button while editing %>
+  </div>
+</turbo-frame>
