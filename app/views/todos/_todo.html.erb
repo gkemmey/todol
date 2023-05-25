@@ -1,0 +1,13 @@
+<div class="group flex items-center gap-4 h-12">
+  <%= form_with model: todo, style: "line-height: 0;" do |f| %>
+    <%= f.check_box :completed, class: "checkbox" %>
+  <% end %>
+
+  <label class="<%= class_names("w-full pl-4", "line-through" => todo.completed?) %>">
+    <%= todo.title %>
+  </label>
+
+  <button class="invisible group-hover:visible btn btn-ghost btn-circle">
+    <%= icon("trash", class: "h-4 w-4") %>
+  </button>
+</div>

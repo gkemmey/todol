@@ -3,5 +3,6 @@ class ListsController < ApplicationController
   end
 
   def show
+    @list = session_user.lists.find(params[:id])
   end
 end

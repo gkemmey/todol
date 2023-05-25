@@ -20,8 +20,8 @@
       <input type="checkbox" class="checkbox" />
     </form>
 
-    <form class="w-full">
-      <input type="text" placeholder="type here" class="input input-bordered w-full" />
+    <div class="w-full">
+      <%= render "todos/form", todo: Todo.new(list: @list) %>
     </form>
   </section>
 
@@ -54,16 +54,6 @@
       </button>
     </div>
 
-    <div class="group flex items-center gap-4 h-12">
-      <form style="line-height: 0;">
-        <input type="checkbox" class="checkbox" checked="checked" />
-      </form>
-
-      <label class="w-full pl-4 line-through">todo #1</label>
-
-      <button class="invisible group-hover:visible btn btn-ghost btn-circle">
-        <%= icon("trash", class: "h-4 w-4") %>
-      </button>
-    </div>
+    <%= render @list.todos %>
   </main>
 </div>

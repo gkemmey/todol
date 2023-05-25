@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
   root "site#home"
 
-  resources :lists, except: [:new, :edit] do
-    resources :todos, except: [:new, :edit] do
+  resources :lists, shallow: true, except: [:new, :edit] do
+    resources :todos, except: [:index, :new, :show] do
       # todo: update many
     end
 
