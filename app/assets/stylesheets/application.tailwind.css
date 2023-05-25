@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* because we've got checkbox that submit forms and navigate frames, i only wanna animate the
+   checkboxes when they're clicked. otherwise you start the animation on click, then it runs again
+   when the frame swaps content. this turns the animation off when they're unfocused, so they don't
+   run on page / frame load. if you're animation is too long running, this'll still cause a weird
+   reset when the frame swaps content, but default for daisy is 0.2s, so should most of the time
+   finish before we swapping content. */
+input.checkbox:not(:focus) {
+  --animation-input: 0;
+}
