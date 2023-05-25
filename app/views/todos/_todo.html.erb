@@ -3,9 +3,27 @@
     <%= f.check_box :completed, class: "checkbox" %>
   <% end %>
 
-  <label class="<%= class_names("w-full pl-4", "line-through" => todo.completed?) %>">
-    <%= todo.title %>
-  </label>
+  <div class="w-full">
+    <%= tag.turbo_frame id: dom_id(todo),
+                        ondblclick: (
+                          <<~JS
+                            (function (frame) {
+                              frame.src = "#{edit_todo_path(todo)}";
+
+                              var wrapper = frame.parentElement.parentElement;
+                              var checkBoxForm = wrapper.children[0];
+                              var deleteButton = wrapper.children[2];
+
+                              checkBoxForm.classList.add("invisible");
+                              deleteButton.classList.add("hidden");
+                            })(this);
+                          JS
+                        ) do %>
+      <label class="<%= class_names("block pl-4", "line-through" => todo.completed?) %>">
+        <%= todo.title %>
+      </label>
+    <% end %>
+  </div>
 
   <button class="invisible group-hover:visible btn btn-ghost btn-circle">
     <%= icon("trash", class: "h-4 w-4") %>

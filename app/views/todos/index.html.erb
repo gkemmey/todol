@@ -1,14 +1,8 @@
 <nav class="navbar bg-base-100 max-w-2xl mx-auto">
-  <div class="navbar-start">
-    <%= link_to lists_path do %>
-      <button class="btn btn-ghost btn-circle">
-        <%= icon("arrow_small_left", class: "h-5 w-5") %>
-      </button>
-    <% end %>
-  </div>
+  <div class="navbar-start"></div>
 
   <div class="navbar-center">
-    <span class="text-xl"><%= '<name>' %></span>
+    <span class="text-xl"><%= "<todo>" %></span>
   </div>
 
   <div class="navbar-end"></div>
@@ -21,7 +15,7 @@
     </form>
 
     <div class="w-full">
-      <%= render "todos/form", todo: Todo.new(list: @list) %>
+      <%= render "todos/form", todo: Todo.new %>
     </form>
   </section>
 
@@ -54,6 +48,6 @@
       </button>
     </div>
 
-    <%= render @list.todos %>
+    <%= render @todos %>
   </main>
 </div>

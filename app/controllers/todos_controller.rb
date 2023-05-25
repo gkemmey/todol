@@ -1,24 +1,33 @@
 class TodosController < ApplicationController
-  before_action :find_list, only: :create
+  def index
+    @todos = session_user.todos
+  end
 
   def create
-    @todo = @list.todos.new(todo_params).tap { |t| t.session_user_id = session_user.id }
+    @todo = session_user.todos.new(todo_params)
 
     if @todo.save
-      redirect_to list_path(@list)
+      redirect_to todos_path
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
+    @todo = session_user.todos.find(params[:id])
+  end
+
+  def update
+    @todo = session_user.todos.find(params[:id])
+
+    if @todo.update(todo_params)
+      redirect_to todos_path
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   private
-
-    def find_list
-      @list = List.find_by(permalink: params[:list_id]) || session_user.lists.find(params[:list_id])
-    end
 
     def todo_params
       params.require(:todo).permit(:title, :completed)

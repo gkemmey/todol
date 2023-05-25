@@ -1,6 +1,4 @@
 class Todo < ApplicationRecord
-  belongs_to :list
-
   before_validation { |t| t.title.try(:strip!) }
   validates :title, presence: true
 

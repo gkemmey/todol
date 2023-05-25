@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   SessionUser = Data.define(:id) do
-                  def lists
-                    List.created_by(self)
+                  def todos
+                    Todo.created_by(self)
                   end
                 end
 
