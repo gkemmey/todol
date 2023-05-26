@@ -10,9 +10,9 @@
 
 <div class="max-w-2xl mx-auto mt-4 px-[var(--navbar-padding,0.5rem)]">
   <section class="flex items-center gap-4">
-    <%= form_with url: update_many_todos_path, scope: :todo,
-                                               method: :patch,
-                                               style: "line-height: 0;" do |f| %>
+    <%= form_with url: update_many_todos_path(filters), scope: :todo,
+                                                        method: :patch,
+                                                        style: "line-height: 0;" do |f| %>
       <% @todos.each do |todo| %>
         <%= hidden_field_tag "ids[]", todo.id %>
       <% end %>
@@ -27,7 +27,7 @@
     <% end %>
 
     <div class="w-full">
-      <%= form_with model: Todo.new do |f| %>
+      <%= form_with model: Todo.new, url: todos_path(filters) do |f| %>
         <%= f.text_field :title, class: "input input-bordered w-full",
                                  placeholder: "what needs to be done?",
                                  autocomplete: :off %>
@@ -41,3 +41,37 @@
     <%= render @todos %>
   </main>
 </div>
+
+<nav class="<%= class_names("navbar bg-base-100 max-w-2xl mx-auto", hidden: !(@todos.any? || filtering?)) %>">
+  <div class="navbar-start">
+    <p><span id="todos_left"><%= todos_left %></span> items left</p>
+  </div>
+
+  <div class="navbar-center">
+    <ul class="flex gap-8">
+      <li>
+        <%= link_to "All", todos_path,
+                           class: class_names(
+                                    "px-2 py-1 border rounded hover:border-primary-focus",
+                                    !filtering? ? "border-primary" : "border-transparent"
+                                  ) %>
+      </li>
+      <li>
+        <%= link_to "Active", todos_path(completed: false),
+                              class: class_names(
+                                       "px-2 py-1 border rounded hover:border-primary-focus",
+                                       filtering?(:incompleted) ? "border-primary" : "border-transparent"
+                                     ) %>
+      </li>
+      <li>
+        <%= link_to "Completed", todos_path(completed: true),
+                                 class: class_names(
+                                          "px-2 py-1 border rounded border-transparent hover:border-primary-focus",
+                                          filtering?(:completed) ? "border-primary" : "border-transparent"
+                                        ) %>
+      </li>
+    </ul>
+  </div>
+
+  <div class="navbar-end"></div>
+</nav>
