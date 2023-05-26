@@ -11,11 +11,12 @@ class TodosController < ApplicationController
     if @todo.save
       redirect_to todos_path(filters)
     else
-      render :new, status: :unprocessable_entity
+      find_todos and render :index, status: :unprocessable_entity
     end
   end
 
   def edit
+    @autofocus = true
   end
 
   def update
@@ -35,6 +36,7 @@ class TodosController < ApplicationController
         format.html { redirect_to todos_path(filters) }
       end
     else
+      @autofocus = false # todo - the form submits in a loop without this b/c of the onblur
       render :edit, status: :unprocessable_entity
     end
   end
