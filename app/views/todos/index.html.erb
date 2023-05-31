@@ -27,10 +27,12 @@
     <% end %>
 
     <div class="w-full">
-      <%= form_with model: Todo.new, url: todos_path(filters) do |f| %>
-        <%= f.text_field :title, class: "input input-bordered w-full",
-                                 placeholder: "what needs to be done?",
-                                 autocomplete: :off %>
+      <%= form_with model: @todo || Todo.new, url: todos_path(filters) do |f| %>
+        <div class="form-control">
+          <%= f.text_field :title, class: "input input-bordered w-full",
+                                   placeholder: "what needs to be done?",
+                                   autocomplete: :off %>
+        </div>
       <% end %>
     </div>
   </section>

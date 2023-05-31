@@ -1,9 +1,10 @@
 module.exports = {
   content: [
-    "./app/views/**/*.html.erb",
-    "./app/helpers/**/*.rb",
     "./app/assets/stylesheets/**/*.css",
-    "./app/javascript/**/*.js"
+    "./app/helpers/**/*.rb",
+    "./app/javascript/**/*.js",
+    "./app/views/**/*.html.erb",
+    "./config/initializers/customize_form_error_rendering.rb"
   ],
 
   daisyui: {
