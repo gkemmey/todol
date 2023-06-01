@@ -1,0 +1,16 @@
+<%= form_with url: update_many_todos_path(filters), scope: :todo,
+                                                    method: :patch,
+                                                    id: "toggle_todos",
+                                                    style: "line-height: 0;" do |f| %>
+  <% todos.each do |todo| %>
+    <%= hidden_field_tag "ids[]", todo.id %>
+  <% end %>
+
+  <%= f.check_box :completed, checked: todos.all?(&:completed?),
+                              class: "checkbox",
+                              onclick: (
+                                <<~JS
+                                  (function (field) { field.closest("form").requestSubmit(); })(this);
+                                JS
+                              ) %>
+<% end %>

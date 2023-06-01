@@ -9,7 +9,19 @@ class TodosController < ApplicationController
     @todo = session_user.todos.new(todo_params)
 
     if @todo.save
-      redirect_to todos_path(filters)
+      respond_to do |format|
+        format.turbo_stream do
+          render(
+            turbo_stream: [
+              turbo_stream.append("todos", partial: "todos/todo", locals: { todo: @todo }),
+
+              turbo_stream.replace("toggle_todos", partial: "todos/forms/toggle", locals: { todos: find_todos }),
+              turbo_stream.replace(helpers.dom_id(Todo.new), partial: "todos/forms/new", locals: { todo: Todo.new }),
+              turbo_stream.update("todos_left", todos_left)
+            ]
+          )
+        end
+      end
     else
       find_todos and render :index, status: :unprocessable_entity
     end
@@ -22,18 +34,20 @@ class TodosController < ApplicationController
   def update
     if @todo.update(todo_params)
       respond_to do |format|
-        unless filtering?
-          format.turbo_stream do
-            render(
-              turbo_stream: [
-                turbo_stream.replace(helpers.dom_id(@todo), partial: "todos/todo", locals: { todo: @todo }),
-                turbo_stream.update("todos_left", todos_left)
-              ]
-            )
-          end
+        format.turbo_stream do
+          render(
+            turbo_stream: todo_streams(@todo).
+                            tap { |streams|
+                              if filtering?
+                                streams << turbo_stream.replace(
+                                                          "toggle_todos",
+                                                          partial: "todos/forms/toggle",
+                                                          locals: { todos: find_todos }
+                                                        )
+                              end
+                            }
+          )
         end
-
-        format.html { redirect_to todos_path(filters) }
       end
     else
       @autofocus = false # todo - the form submits in a loop without this b/c of the onblur
@@ -42,13 +56,33 @@ class TodosController < ApplicationController
   end
 
   def update_many
-    session_user.todos.where(id: params[:ids]).update_all(todo_params.to_h)
-    redirect_to todos_path(filters)
+    todos = session_user.todos.where(id: params[:ids])
+    todos.update_all(todo_params.to_h)
+
+    respond_to do |format|
+      format.turbo_stream do
+        render(
+          turbo_stream: todo_streams(todos).
+                          tap { |streams|
+                            if filtering?
+                              streams << turbo_stream.replace(
+                                                        "toggle_todos",
+                                                        partial: "todos/forms/toggle",
+                                                        locals: { todos: find_todos }
+                                                      )
+                            end
+                          }
+        )
+      end
+    end
   end
 
   def destroy
     @todo.destroy!
-    redirect_to todos_path(filters)
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: todo_streams(@todo) }
+    end
   end
 
   private
@@ -76,12 +110,33 @@ class TodosController < ApplicationController
       @todos = session_user.todos.where(filtering? ? { completed: filtering?(:completed) } : nil)
     end
 
-    def todo_params
-      params.require(:todo).permit(:title, :completed)
-    end
-
     def todos_left
       session_user.todos.where(completed: false).count
     end
     helper_method :todos_left
+
+    def todo_params
+      params.require(:todo).permit(:title, :completed)
+    end
+
+    def todo_streams(todos)
+      [turbo_stream.update("todos_left", todos_left)].tap do |streams|
+        Array(todos).each do |todo|
+          streams.unshift(
+            if todo_visible?(todo)
+              turbo_stream.replace(helpers.dom_id(todo), partial: "todos/todo", locals: { todo: todo })
+            else
+              turbo_stream.remove(helpers.dom_id(todo))
+            end
+          )
+        end
+      end
+    end
+
+    def todo_visible?(todo)
+      return false if  todo.destroyed?
+      return false if  todo.completed? && filtering?(:incompleted)
+      return false if !todo.completed? && filtering?(:completed)
+      true
+    end
 end

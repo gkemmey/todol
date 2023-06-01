@@ -2,7 +2,6 @@
   <div class="group flex items-center gap-4 h-12">
     <%= form_with model: todo,
                   url: todo_path(todo, filters),
-                  **(filtering? ? { data: { turbo_frame: "_top" } } : {}),
                   style: "line-height: 0;" do |f| %>
       <%= f.check_box :completed, class: "checkbox",
                                   onclick: (
@@ -26,7 +25,7 @@
 
     <%= button_to todo_path(todo, filters),
                   method: :delete,
-                  form: { data: { turbo_confirm: "Are you sure?", turbo_frame: "_top" } },
+                  form: { data: { turbo_confirm: "Are you sure?" } },
                   class: "btn btn-ghost btn-circle invisible group-hover:visible" do %>
       <%= icon("trash", class: "h-4 w-4") %>
     <% end %>

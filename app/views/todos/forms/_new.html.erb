@@ -1,0 +1,7 @@
+<%= form_with model: todo, url: todos_path(filters), id: dom_id(todo) do |f| %>
+  <div class="form-control">
+    <%= f.text_field :title, class: "input input-bordered w-full",
+                             placeholder: "what needs to be done?",
+                             autocomplete: :off %>
+  </div>
+<% end %>

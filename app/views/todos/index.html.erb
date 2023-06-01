@@ -10,36 +10,16 @@
 
 <div class="max-w-2xl mx-auto mt-4 px-[var(--navbar-padding,0.5rem)]">
   <section class="flex items-center gap-4">
-    <%= form_with url: update_many_todos_path(filters), scope: :todo,
-                                                        method: :patch,
-                                                        style: "line-height: 0;" do |f| %>
-      <% @todos.each do |todo| %>
-        <%= hidden_field_tag "ids[]", todo.id %>
-      <% end %>
-
-      <%= f.check_box :completed, checked: @todos.all?(&:completed?),
-                                  class: "checkbox",
-                                  onclick: (
-                                    <<~JS
-                                      (function (field) { field.closest("form").requestSubmit(); })(this);
-                                    JS
-                                  ) %>
-    <% end %>
+    <%= render partial: "todos/forms/toggle", locals: { todos: @todos } %>
 
     <div class="w-full">
-      <%= form_with model: @todo || Todo.new, url: todos_path(filters) do |f| %>
-        <div class="form-control">
-          <%= f.text_field :title, class: "input input-bordered w-full",
-                                   placeholder: "what needs to be done?",
-                                   autocomplete: :off %>
-        </div>
-      <% end %>
+      <%= render partial: "todos/forms/new", locals: { todo: @todo || Todo.new } %>
     </div>
   </section>
 
   <div class="divider"></div>
 
-  <main>
+  <main id="todos">
     <%= render @todos %>
   </main>
 </div>
@@ -68,7 +48,7 @@
       <li>
         <%= link_to "Completed", todos_path(completed: true),
                                  class: class_names(
-                                          "px-2 py-1 border rounded border-transparent hover:border-primary-focus",
+                                          "px-2 py-1 border rounded hover:border-primary-focus",
                                           filtering?(:completed) ? "border-primary" : "border-transparent"
                                         ) %>
       </li>
