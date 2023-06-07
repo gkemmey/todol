@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
     def session_user
       @session_user ||= SessionUser.new(id: session[:user_id] || generate_session_user_id)
     end
+    helper_method :session_user
 
     def generate_session_user_id
       session[:user_id] = SecureRandom.hex

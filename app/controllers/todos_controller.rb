@@ -18,7 +18,7 @@ class TodosController < ApplicationController
               turbo_stream.replace("toggle_todos", partial: "todos/forms/toggle", locals: { todos: find_todos }),
               turbo_stream.replace(helpers.dom_id(Todo.new), partial: "todos/forms/new", locals: { todo: Todo.new }),
               turbo_stream.update("todos_left", todos_left)
-            ]
+            ].tap { |r| Turbo::StreamsChannel.broadcast_stream_to(session_user.id, content: r.join) }
           )
         end
       end

@@ -1,0 +1,16 @@
+default: &default
+  config_path: # i want to load environmentized-config myself, so we nil-ify this
+  logger:      # ref: https://github.com/oldmoe/litestack/blob/master/lib/active_job/queue_adapters/litejob_adapter.rb#L36
+  sync: 1
+
+development:
+  <<: *default
+  path: db/development_litejob.sqlite3
+
+test:
+  <<: *default
+  path: db/test_litejob.sqlite3
+
+production:
+  <<: *default
+  path: db/production_litejob.sqlite3

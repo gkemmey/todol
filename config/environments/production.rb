@@ -84,4 +84,12 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # -------- ☝️ rails's defaults --------
+  # -------- 👇 what we override --------
+
+  config.active_job.queue_adapter = :litejob
+  config.cache_store = :litecache, YAML.load_file(Rails.root.join("config/litecache.yml"), aliases: true).
+                                        fetch(Rails.env, {}).
+                                        symbolize_keys
 end

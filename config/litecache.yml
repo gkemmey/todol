@@ -1,0 +1,15 @@
+default: &default
+  config_path: # i want to load environmentized-config myself, so we nil-ify this
+  sync: 1
+
+development:
+  <<: *default
+  path: db/development_litecache.sqlite3
+
+test:
+  <<: *default
+  path: db/test_litecache.sqlite3
+
+production:
+  <<: *default
+  path: db/production_litecache.sqlite3

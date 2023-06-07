@@ -65,4 +65,15 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
+
+  # -------- ☝️ rails's defaults --------
+  # -------- 👇 what we override --------
+
+  config.active_job.queue_adapter = :litejob
+
+  if Rails.root.join("tmp/caching-dev.txt").exist?
+    config.cache_store = :litecache, YAML.load_file(Rails.root.join("config/litecache.yml"), aliases: true).
+                                          fetch(Rails.env, {}).
+                                          symbolize_keys
+  end
 end
