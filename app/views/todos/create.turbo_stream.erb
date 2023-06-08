@@ -1,0 +1,4 @@
+<%= render partial: "todos/todo", locals: { todo: @todo } %>
+
+<%= turbo_stream.replace(dom_id(Todo.new), partial: "todos/forms/new", locals: { todo: Todo.new }) %>
+<%= turbo_stream.update("todos_left", todos_left) %>

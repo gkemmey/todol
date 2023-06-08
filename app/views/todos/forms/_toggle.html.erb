@@ -1,9 +1,11 @@
 <%= form_with url: update_many_todos_path(filters), scope: :todo,
                                                     method: :patch,
                                                     id: "toggle_todos",
+                                                    data: { showing: token_list(completed: !filtering?(:incompleted),
+                                                                                incompleted: !filtering?(:completed)) },
                                                     style: "line-height: 0;" do |f| %>
   <% todos.each do |todo| %>
-    <%= hidden_field_tag "ids[]", todo.id %>
+    <%= hidden_field_tag "ids[]", todo.id, id: nil %>
   <% end %>
 
   <%= f.check_box :completed, checked: todos.all?(&:completed?),

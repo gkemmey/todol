@@ -1,4 +1,4 @@
-<turbo-frame id="<%= dom_id(@todo) %>">
+<turbo-frame id="<%= dom_id(@todo) %>" data-sort-code="<%= @todo.created_at.to_i %>">
   <div class="group flex items-center gap-4 h-12">
     <%# rendered invisible to consume the space %>
     <%= form_with model: @todo, style: "line-height: 0;", class: "invisible" do |f| %>

@@ -10,17 +10,9 @@ class TodosController < ApplicationController
 
     if @todo.save
       respond_to do |format|
-        format.turbo_stream do
-          render(
-            turbo_stream: [
-              turbo_stream.append("todos", partial: "todos/todo", locals: { todo: @todo }),
-
-              turbo_stream.replace("toggle_todos", partial: "todos/forms/toggle", locals: { todos: find_todos }),
-              turbo_stream.replace(helpers.dom_id(Todo.new), partial: "todos/forms/new", locals: { todo: Todo.new }),
-              turbo_stream.update("todos_left", todos_left)
-            ].tap { |r| Turbo::StreamsChannel.broadcast_stream_to(session_user.id, content: r.join) }
-          )
-        end
+        format.turbo_stream {
+          # Turbo::StreamsChannel.broadcast_render_to(session_user.id, template: "todos/create", locals: { "@todo": @todo, filters: {} })
+        }
       end
     else
       find_todos and render :index, status: :unprocessable_entity
@@ -34,20 +26,7 @@ class TodosController < ApplicationController
   def update
     if @todo.update(todo_params)
       respond_to do |format|
-        format.turbo_stream do
-          render(
-            turbo_stream: todo_streams(@todo).
-                            tap { |streams|
-                              if filtering?
-                                streams << turbo_stream.replace(
-                                                          "toggle_todos",
-                                                          partial: "todos/forms/toggle",
-                                                          locals: { todos: find_todos }
-                                                        )
-                              end
-                            }
-          )
-        end
+        format.turbo_stream {}
       end
     else
       @autofocus = false # todo - the form submits in a loop without this b/c of the onblur
@@ -56,24 +35,11 @@ class TodosController < ApplicationController
   end
 
   def update_many
-    todos = session_user.todos.where(id: params[:ids])
-    todos.update_all(todo_params.to_h)
+    @todos = session_user.todos.where(id: params[:ids])
+    @todos.update_all(todo_params.to_h)
 
     respond_to do |format|
-      format.turbo_stream do
-        render(
-          turbo_stream: todo_streams(todos).
-                          tap { |streams|
-                            if filtering?
-                              streams << turbo_stream.replace(
-                                                        "toggle_todos",
-                                                        partial: "todos/forms/toggle",
-                                                        locals: { todos: find_todos }
-                                                      )
-                            end
-                          }
-        )
-      end
+      format.turbo_stream {}
     end
   end
 
@@ -81,7 +47,7 @@ class TodosController < ApplicationController
     @todo.destroy!
 
     respond_to do |format|
-      format.turbo_stream { render turbo_stream: todo_streams(@todo) }
+      format.turbo_stream {}
     end
   end
 
@@ -117,26 +83,5 @@ class TodosController < ApplicationController
 
     def todo_params
       params.require(:todo).permit(:title, :completed)
-    end
-
-    def todo_streams(todos)
-      [turbo_stream.update("todos_left", todos_left)].tap do |streams|
-        Array(todos).each do |todo|
-          streams.unshift(
-            if todo_visible?(todo)
-              turbo_stream.replace(helpers.dom_id(todo), partial: "todos/todo", locals: { todo: todo })
-            else
-              turbo_stream.remove(helpers.dom_id(todo))
-            end
-          )
-        end
-      end
-    end
-
-    def todo_visible?(todo)
-      return false if  todo.destroyed?
-      return false if  todo.completed? && filtering?(:incompleted)
-      return false if !todo.completed? && filtering?(:completed)
-      true
     end
 end

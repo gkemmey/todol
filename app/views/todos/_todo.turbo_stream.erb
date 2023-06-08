@@ -1,0 +1,15 @@
+<% (todo.completed? ? "completed" : "incompleted").tap do |showing| %>
+
+  <%= turbo_stream.append_all("#todos[data-showing~=#{showing}]",
+                              partial: "todos/todo",
+                              locals: { todo: todo }) %>
+
+  <%= turbo_stream.append_all("#toggle_todos[data-showing~=#{showing}]") do %>
+    <%= hidden_field_tag "ids[]", todo.id, id: nil %>
+  <% end %>
+
+  <%= turbo_stream.remove_all("#todos:not([data-showing~=#{showing}]) ##{dom_id(todo)}")%>
+
+  <%= turbo_stream.remove_all("#toggle_todos:not([data-showing~=#{showing}]) [value=\"#{todo.id}\"]") %>
+
+<% end %>

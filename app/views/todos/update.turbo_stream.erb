@@ -1,0 +1,2 @@
+<%= render partial: "todos/todo", locals: { todo: @todo } %>
+<%= turbo_stream.update("todos_left", todos_left) %>

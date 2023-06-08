@@ -21,12 +21,14 @@
 
   <div class="divider"></div>
 
-  <main id="todos">
+  <main id="todos" data-showing="<%= token_list(completed: !filtering?(:incompleted),
+                                                incompleted: !filtering?(:completed)) %>"
+                   data-controller="sort_children">
     <%= render @todos %>
   </main>
 </div>
 
-<nav class="<%= class_names("navbar bg-base-100 max-w-2xl mx-auto", hidden: !(@todos.any? || filtering?)) %>">
+<nav class="navbar bg-base-100 max-w-2xl mx-auto">
   <div class="navbar-start">
     <p><span id="todos_left"><%= todos_left %></span> items left</p>
   </div>

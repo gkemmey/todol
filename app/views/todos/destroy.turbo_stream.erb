@@ -1,0 +1,3 @@
+<%= turbo_stream.remove(dom_id(@todo))%>
+<%= turbo_stream.remove_all("#toggle_todos [value=\"#{@todo.id}\"]") %>
+<%= turbo_stream.update("todos_left", todos_left) %>
