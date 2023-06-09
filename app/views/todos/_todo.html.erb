@@ -1,7 +1,7 @@
 <turbo-frame id="<%= dom_id(todo) %>" data-sort-code="<%= todo.created_at.to_i %>">
   <div class="group flex items-center gap-4 h-12">
     <%= form_with model: todo,
-                  url: todo_path(todo, filters),
+                  url: todo_path(todo),
                   style: "line-height: 0;" do |f| %>
       <%= f.check_box :completed, class: "checkbox",
                                   onclick: (
@@ -16,14 +16,14 @@
                     <<~JS
                       (function (label) {
                         var frame = label.closest("##{dom_id(todo)}");
-                        frame.src = "#{edit_todo_path(todo, filters)}";
+                        frame.src = "#{edit_todo_path(todo)}";
                       })(this);
                     JS
                   ) do %>
       <%= todo.title %>
     <% end %>
 
-    <%= button_to todo_path(todo, filters),
+    <%= button_to todo_path(todo),
                   method: :delete,
                   form: { data: { turbo_confirm: "Are you sure?" } },
                   class: "btn btn-ghost btn-circle invisible group-hover:visible" do %>

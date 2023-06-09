@@ -5,7 +5,7 @@
       <%= f.check_box :completed, class: "checkbox" %>
     <% end %>
 
-    <%= form_with model: @todo, url: todo_path(@todo, filters), class: "w-full" do |f| %>
+    <%= form_with model: @todo, url: todo_path(@todo), class: "w-full" do |f| %>
       <div class="form-control">
         <%= f.text_field :title, class: "input input-bordered w-full",
                                  placeholder: "type here",

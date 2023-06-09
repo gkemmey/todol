@@ -10,9 +10,7 @@ class TodosController < ApplicationController
 
     if @todo.save
       respond_to do |format|
-        format.turbo_stream {
-          # Turbo::StreamsChannel.broadcast_render_to(session_user.id, template: "todos/create", locals: { "@todo": @todo, filters: {} })
-        }
+        format.turbo_stream {}
       end
     else
       find_todos and render :index, status: :unprocessable_entity
@@ -39,6 +37,11 @@ class TodosController < ApplicationController
     @todos.update_all(todo_params.to_h)
 
     respond_to do |format|
+      Turbo::StreamsChannel.broadcast_render_later_to(
+                              session_user.id,
+                              template: "todos/update_many",
+                              locals: { "@todos": @todos.to_a, todos_left: todos_left }
+                            )
       format.turbo_stream {}
     end
   end
@@ -77,7 +80,7 @@ class TodosController < ApplicationController
     end
 
     def todos_left
-      session_user.todos.where(completed: false).count
+      Todo.todos_left(session_user)
     end
     helper_method :todos_left
 
