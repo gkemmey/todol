@@ -1,0 +1,15 @@
+# we only need litestream in prod. i'd rather inline this in the Dockerfile, but litestream
+# needs a config file if you're gonna do multiple dbs.
+
+dbs:
+  - path: /app/db/production.sqlite3
+    replicas:
+      - url: s3://todol--all/db/production.sqlite3
+
+  - path: /app/db/production_litecache.sqlite3
+    replicas:
+      - url: s3://todol--all/db/production_litecache.sqlite3
+
+  - path: /app/db/production_litejob.sqlite3
+    replicas:
+      - url: s3://todol--all/db/production_litejob.sqlite3

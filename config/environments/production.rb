@@ -87,6 +87,7 @@ Rails.application.configure do
 
   # -------- ☝️ rails's defaults --------
   # -------- 👇 what we override --------
+  config.active_record.sqlite3_production_warning = false
 
   config.active_job.queue_adapter = :litejob
   config.cache_store = :litecache, YAML.load_file(Rails.root.join("config/litecache.yml"), aliases: true).
