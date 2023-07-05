@@ -1,5 +1,5 @@
 default: &default
-  config_path: # i want to load environmentized-config myself, so we nil-ify this
+  config_path: # config_paths are always loaded, unless blanked (ref: https://github.com/oldmoe/litestack/blob/master/lib/litestack/litesupport.rb#L241)
 
 development:
   <<: *default
